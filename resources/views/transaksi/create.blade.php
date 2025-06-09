@@ -19,7 +19,7 @@
                                         <div class="mt-1 flex rounded-md shadow-sm">
                                             <input type="text" name="id_barang" id="id_barang" value="{{ old('id_barang') }}"
                                                 class="flex-1 block w-full rounded-l-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 rounded-r-md bg-blue-600 text-white hover:bg-blue-700">
+                                            <button type="button" onclick="cariBarang()" id="btn-cari-barang" class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 rounded-r-md bg-blue-600 text-white hover:bg-blue-700">
                                                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                                 </svg>
@@ -134,7 +134,7 @@
     @push('head')
     <script>
         let items = [];
-        
+
         function formatRupiah(angka) {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -221,6 +221,31 @@
                 </tr>
             `).join('');
         }
+
+        // AJAX pencarian barang
+        document.getElementById('btn-cari-barang').addEventListener('click', function(e) {
+            const id_barang = document.getElementById('id_barang').value;
+            if (!id_barang) {
+                Swal.fire({ icon: 'error', title: 'ID Barang harus diisi!' });
+                return;
+            }
+            fetch(`{{ route('ajax.cari-barang') }}?id_barang=${id_barang}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('product').value = data.data.product;
+                        document.getElementById('harga').value = data.data.harga;
+                        document.getElementById('quantity').value = 1;
+                        hitungSubTotal();
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Barang tidak ditemukan!' });
+                        document.getElementById('product').value = '';
+                        document.getElementById('harga').value = '';
+                        document.getElementById('quantity').value = 1;
+                        document.getElementById('sub_total').value = '';
+                    }
+                });
+        });
     </script>
     @endpush
 </x-app-layout>

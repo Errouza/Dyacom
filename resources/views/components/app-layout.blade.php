@@ -60,15 +60,15 @@
                 </ul>
                 <div class="mb-4 text-xs font-bold text-white/60">TRANSAKSI TOKO</div>
                 <ul class="space-y-2">
-                    <li><a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-white/10"><span>💰</span>Penjualan</a></li>
-                    <li><a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-white/10"><span>🧾</span>Invoice</a></li>
+                    <li><a href="{{ route('penjualan.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-white/10"><span>💰</span>Penjualan</a></li>
+                    <li><a href="{{ route('invoice.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-white/10"><span>🧾</span>Invoice</a></li>
                 </ul>
             </nav>
         </aside>
         <!-- Main Content -->
         <main class="flex-1 p-6 bg-gray-100">
             <div class="max-w-7xl mx-auto">
-                <h1 class="text-2xl font-semibold mb-6">Dashboard</h1>
+                <h1 class="text-2xl font-semibold mb-6">DYACOM</h1>
                 {{ $slot }}
             </div>
         </main>

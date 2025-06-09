@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
+use App\Models\BarangService;
 use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
@@ -91,5 +92,26 @@ class TransaksiController extends Controller
 
         return redirect()->route('transaksi.index')
             ->with('success', 'Transaksi berhasil dihapus.');
+    }
+
+    /**
+     * AJAX: Cari barang berdasarkan ID
+     */
+    public function cariBarang(Request $request)
+    {
+        $id_barang = $request->input('id_barang');
+        $barang = BarangService::where('id_barang', $id_barang)->first();
+        if ($barang) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id_barang' => $barang->id_barang,
+                    'product' => $barang->product,
+                    'harga' => $barang->harga,
+                ]
+            ]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Barang tidak ditemukan']);
+        }
     }
 }

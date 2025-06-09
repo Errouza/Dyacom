@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\BarangServiceController;
 use App\Http\Controllers\BarangCustomController;
+use App\Http\Controllers\PenjualanController;
+use App\Http\Controllers\InvoiceController;
 
 // Home route
 Route::get('/', function () {
@@ -45,4 +47,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('barang-custom', BarangCustomController::class);
     Route::patch('barang-custom/{barangCustom}/status', [BarangCustomController::class, 'updateStatus'])
         ->name('barang-custom.update-status');
+
+    // Penjualan Routes
+    Route::resource('penjualan', PenjualanController::class);
+    Route::get('penjualan/{penjualan}/invoice', [PenjualanController::class, 'invoice'])->name('penjualan.invoice');
+    Route::get('penjualan/{penjualan}/download-invoice', [PenjualanController::class, 'downloadInvoice'])->name('penjualan.download-invoice');
+
+    // Invoice Routes
+    Route::get('invoice', [InvoiceController::class, 'index'])->name('invoice.index');
+    Route::get('invoice/{invoice}', [InvoiceController::class, 'show'])->name('invoice.show');
+
+    // AJAX: Cari barang by ID
+    Route::get('ajax/cari-barang', [TransaksiController::class, 'cariBarang'])->name('ajax.cari-barang');
 });
