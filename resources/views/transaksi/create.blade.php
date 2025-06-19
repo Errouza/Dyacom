@@ -75,15 +75,25 @@
                                     <input type="number" name="total" id="total" readonly
                                         class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 sm:text-sm">
                                 </div>
+
                                 <div>
                                     <label for="bayar" class="block text-sm font-medium text-gray-700">Bayar (Rp)</label>
-                                    <input type="number" name="bayar" id="bayar" oninput="hitungKembalian()"
-                                        class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    <input type="number" name="bayar" id="bayar" value="0"
+                                        class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                        onchange="hitungKembalian()">
                                 </div>
+
                                 <div>
                                     <label for="kembalian" class="block text-sm font-medium text-gray-700">Kembalian (Rp)</label>
                                     <input type="number" name="kembalian" id="kembalian" readonly
                                         class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 sm:text-sm">
+                                </div>
+
+                                <div>
+                                    <label for="buyer_name" class="block text-sm font-medium text-gray-700">Nama Pembeli (Opsional)</label>
+                                    <input type="text" name="buyer_name" id="buyer_name"
+                                        class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                        placeholder="Masukkan nama pembeli">
                                 </div>
                             </div>
                         </div>
@@ -293,6 +303,15 @@
         }
 
         document.getElementById('transaction-form').addEventListener('submit', function(e) {
+            if (items.length === 0) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Transaksi Kosong',
+                    text: 'Harap tambahkan setidaknya satu barang sebelum menyimpan.'
+                });
+                return;
+            }
             document.getElementById('items-input').value = JSON.stringify(items);
         });
     </script>

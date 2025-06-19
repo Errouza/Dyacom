@@ -10,37 +10,32 @@
                         </a>
                     </div>
 
-                    @if(session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <span class="block sm:inline">{{ session('success') }}</span>
-                        </div>
-                    @endif
+
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full table-auto">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Barang</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Transaksi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pembeli</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Item</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($transaksis as $transaksi)
+                                @forelse($transaksis as $transaksi)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $transaksi->id_barang }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $transaksi->product }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transaksi->harga, 0, ',', '.') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $transaksi->quantity }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ $transaksi->id }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $transaksi->buyer_name ?? 'Anonim' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">{{ $transaksi->details->count() }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $transaksi->buyer_name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $transaksi->created_at->format('d M Y, H:i') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <a href="{{ route('transaksi.show', $transaksi) }}" class="text-blue-600 hover:text-blue-900 mr-3">Detail</a>
-                                            <a href="{{ route('transaksi.edit', $transaksi) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
+                                            {{-- Tombol Edit dinonaktifkan untuk sementara --}}
+                                            {{-- <a href="{{ route('transaksi.edit', $transaksi) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a> --}}
                                             <button onclick="confirmDelete('{{ $transaksi->id }}')" class="text-red-600 hover:text-red-900">
                                                 Hapus
                                             </button>
@@ -50,7 +45,13 @@
                                             </form>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                                            Belum ada data transaksi.
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

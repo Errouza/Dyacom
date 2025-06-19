@@ -4,33 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Transaksi extends Model
 {
     protected $fillable = [
-        'id_barang',
-        'product',
-        'harga',
-        'quantity',
-        'sub_total',
         'total',
+        'bayar',
+        'kembalian',
         'buyer_name',
         'buyer_email',
         'buyer_phone'
     ];
 
     protected $casts = [
-        'harga' => 'decimal:2',
-        'sub_total' => 'decimal:2',
         'total' => 'decimal:2',
+        'bayar' => 'decimal:2',
+        'kembalian' => 'decimal:2',
     ];
 
-    protected static function boot()
+    /**
+     * Get all of the details for the Transaksi.
+     */
+    public function details(): HasMany
     {
-        parent::boot();
-        
-        static::creating(function ($transaksi) {
-            $transaksi->sub_total = $transaksi->harga * $transaksi->quantity;
-            $transaksi->total = $transaksi->sub_total;
-        });
+        return $this->hasMany(TransaksiDetail::class);
     }
 }

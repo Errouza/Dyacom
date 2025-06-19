@@ -11,7 +11,6 @@
     @stack('head')
 </head>
 <body class="font-sans antialiased bg-gray-100 min-h-screen">
-    <!-- Session Status -->
     @if (session('success'))
     <script>
         Swal.fire({
@@ -41,7 +40,7 @@
                 icon: 'error',
                 title: 'Error!',
                 text: "{{ session('error') }}",
-                showConfirmButton: true
+                confirmButtonColor: '#172A5A'
             });
         </script>
     @endif

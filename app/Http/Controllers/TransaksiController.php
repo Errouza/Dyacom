@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaksi;
 use App\Models\BarangService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
@@ -31,19 +32,49 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_barang' => 'required|string',
-            'product' => 'required|string',
-            'harga' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:1',
-            'buyer_name' => 'required|string',
-            'buyer_email' => 'nullable|email',
-            'buyer_phone' => 'nullable|string'
+            'items' => 'required|json',
+            'total' => 'required|numeric|min:0',
+            'bayar' => 'required|numeric|min:0',
+            'kembalian' => 'required|numeric',
+            'buyer_name' => 'nullable|string|max:255',
+            'buyer_email' => 'nullable|email|max:255',
+            'buyer_phone' => 'nullable|string|max:255',
         ]);
 
-        $transaksi = Transaksi::create($validated);
+        $items = json_decode($validated['items'], true);
 
-        return redirect()->route('transaksi.index')
-            ->with('success', 'Transaksi berhasil dibuat.');
+        try {
+            DB::transaction(function () use ($request, $validated, $items) {
+                // 1. Create the main transaction record
+                $transaksi = Transaksi::create([
+                    'total' => $validated['total'],
+                    'bayar' => $validated['bayar'],
+                    'kembalian' => $validated['kembalian'],
+                    'buyer_name' => $request->input('buyer_name'),
+                    'buyer_email' => $request->input('buyer_email'),
+                    'buyer_phone' => $request->input('buyer_phone'),
+                ]);
+
+                // 2. Create the transaction detail records
+                foreach ($items as $item) {
+                    $transaksi->details()->create([
+                        'id_barang' => $item['id_barang'],
+                        'product' => $item['product'],
+                        'harga' => $item['harga'],
+                        'quantity' => $item['quantity'],
+                        'sub_total' => $item['sub_total'],
+                    ]);
+                }
+            });
+
+            return redirect()->route('transaksi.index')
+                ->with('success', 'Transaksi berhasil disimpan.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Gagal menyimpan transaksi. Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
@@ -51,6 +82,9 @@ class TransaksiController extends Controller
      */
     public function show(Transaksi $transaksi)
     {
+        // Eager load the details relationship
+        $transaksi->load('details');
+        
         return view('transaksi.show', compact('transaksi'));
     }
 
