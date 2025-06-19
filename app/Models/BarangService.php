@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BarangService extends Model
 {
+    protected $table = 'barang_services';
+
     protected $fillable = [
         'id_barang',
         'product',
@@ -18,6 +20,6 @@ class BarangService extends Model
 
     protected $casts = [
         'tanggal_masuk' => 'date',
-        'harga' => 'decimal:2'
+        'harga' => 'decimal:2',
     ];
 }

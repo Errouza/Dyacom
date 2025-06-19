@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Barang Service Routes
     Route::resource('barang-service', BarangServiceController::class);
+    Route::get('/api/barang-service', [BarangServiceController::class, 'search'])->name('api.barang-service.search');
 
     // Barang Custom Routes
     Route::resource('barang-custom', BarangCustomController::class);
@@ -59,4 +60,8 @@ Route::middleware(['auth'])->group(function () {
 
     // AJAX: Cari barang by ID
     Route::get('ajax/cari-barang', [TransaksiController::class, 'cariBarang'])->name('ajax.cari-barang');
+
+    // Profile Routes
+    Route::get('/profile/edit', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 });

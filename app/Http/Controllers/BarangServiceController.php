@@ -111,4 +111,19 @@ class BarangServiceController extends Controller
         return redirect()->route('barang-service.index')
             ->with('success', 'Data barang berhasil dihapus');
     }
+
+    /**
+     * Search for items based on a query.
+     */
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        $items = BarangService::query()
+            ->where('product', 'LIKE', "%{$query}%")
+            ->select('id', 'product', 'harga', 'stok')
+            ->limit(15)
+            ->get();
+
+        return response()->json($items);
+    }
 }

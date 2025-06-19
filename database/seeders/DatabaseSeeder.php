@@ -21,5 +21,9 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('admin123'), // Password yang sudah di-hash
             'email_verified_at' => now(), // Set waktu verifikasi email
         ]);
+
+        $this->call([
+            BarangServisSeeder::class,
+        ]);
     }
 }

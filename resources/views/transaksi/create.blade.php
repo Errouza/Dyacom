@@ -1,69 +1,63 @@
 <x-app-layout>
+    @push('head')
+        {{-- Load Alpine.js for modal interactivity --}}
+        <script src="//unpkg.com/alpinejs" defer></script>
+    @endpush
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+                {{-- Initialize Alpine.js component for the search modal --}}
+                <div class="p-6 bg-white border-b border-gray-200" x-data="searchModal()">
                     <div class="mb-6">
                         <h2 class="text-2xl font-semibold">Tambah Transaksi Baru</h2>
                     </div>
 
-                    <form action="{{ route('transaksi.store') }}" method="POST">
+                    {{-- The main form --}}
+                    <form id="transaction-form" action="{{ route('transaksi.store') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="items" id="items-input">
 
                         <div class="grid grid-cols-2 gap-x-8 gap-y-4">
-                            <!-- Kolom Kiri -->
+                            <!-- Kolom Kiri: Item selection and details -->
                             <div class="space-y-4">
-                                <div class="flex items-center gap-4">
-                                    <div class="flex-1">
-                                        <label for="id_barang" class="block text-sm font-medium text-gray-700">ID Barang</label>
-                                        <div class="mt-1 flex rounded-md shadow-sm">
-                                            <input type="text" name="id_barang" id="id_barang" value="{{ old('id_barang') }}"
-                                                class="flex-1 block w-full rounded-l-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                            <button type="button" onclick="cariBarang()" id="btn-cari-barang" class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 rounded-r-md bg-blue-600 text-white hover:bg-blue-700">
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        @error('id_barang')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
+                                
+                                <!-- Search Button to trigger modal -->
+                                <div>
+                                    <label for="product-display" class="block text-sm font-medium text-gray-700">Barang</label>
+                                    <div class="mt-1 flex rounded-md shadow-sm">
+                                        <input type="text" id="product-display" readonly placeholder="Klik cari untuk memilih barang"
+                                            class="flex-1 block w-full rounded-l-md bg-gray-100 border-gray-300 sm:text-sm">
+                                        <button type="button" @click="open = true" class="relative -ml-px inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span>Cari</span>
+                                        </button>
                                     </div>
                                 </div>
-
-                                <div>
-                                    <label for="product" class="block text-sm font-medium text-gray-700">Product</label>
-                                    <input type="text" name="product" id="product" value="{{ old('product') }}"
-                                        class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                    @error('product')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                                
+                                {{-- Hidden input to store the selected item's ID --}}
+                                <input type="hidden" id="id_barang">
+                                <input type="hidden" id="product">
 
                                 <div>
                                     <label for="harga" class="block text-sm font-medium text-gray-700">Harga (Rp)</label>
-                                    <input type="number" name="harga" id="harga" value="{{ old('harga') }}"
-                                        class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                        onchange="hitungSubTotal()">
-                                    @error('harga')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
+                                    <input type="number" id="harga" readonly
+                                        class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 sm:text-sm">
                                 </div>
 
                                 <div>
                                     <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
-                                    <input type="number" name="quantity" id="quantity" value="{{ old('quantity', 1) }}" min="1"
+                                    <input type="number" id="quantity" value="1" min="1"
                                         class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                         onchange="hitungSubTotal()">
-                                    @error('quantity')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
                                 </div>
 
                                 <div>
                                     <label for="sub_total" class="block text-sm font-medium text-gray-700">Sub Total (Rp)</label>
-                                    <input type="number" name="sub_total" id="sub_total" readonly
-                                        class="mt-1 block w-full rounded-md bg-gray-50 border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    <input type="number" id="sub_total" readonly
+                                        class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 sm:text-sm">
                                 </div>
 
                                 <div>
@@ -74,29 +68,27 @@
                                 </div>
                             </div>
 
-                            <!-- Kolom Kanan -->
+                            <!-- Kolom Kanan: Totals and payment -->
                             <div class="space-y-4">
                                 <div>
                                     <label for="total" class="block text-sm font-medium text-gray-700">Total (Rp)</label>
                                     <input type="number" name="total" id="total" readonly
-                                        class="mt-1 block w-full rounded-md bg-gray-50 border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                        class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 sm:text-sm">
                                 </div>
-
                                 <div>
                                     <label for="bayar" class="block text-sm font-medium text-gray-700">Bayar (Rp)</label>
-                                    <input type="number" name="bayar" id="bayar"
-                                        class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                        onchange="hitungKembalian()">
+                                    <input type="number" name="bayar" id="bayar" oninput="hitungKembalian()"
+                                        class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                                 </div>
-
                                 <div>
-                                    <label for="kembalian" class="block text-sm font-medium text-gray-700">Kembali (Rp)</label>
+                                    <label for="kembalian" class="block text-sm font-medium text-gray-700">Kembalian (Rp)</label>
                                     <input type="number" name="kembalian" id="kembalian" readonly
-                                        class="mt-1 block w-full rounded-md bg-gray-50 border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                        class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 sm:text-sm">
                                 </div>
                             </div>
                         </div>
 
+                        {{-- Table to display items added to the transaction --}}
                         <div class="mt-8">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -110,36 +102,112 @@
                                     </tr>
                                 </thead>
                                 <tbody id="item-list" class="bg-white divide-y divide-gray-200">
-                                    <!-- Items will be added here dynamically -->
+                                    <!-- Items will be added here dynamically by JavaScript -->
                                 </tbody>
                             </table>
                         </div>
 
+                        {{-- Form action buttons --}}
                         <div class="mt-6 flex items-center justify-end space-x-3">
                             <a href="{{ route('transaksi.index') }}" 
-                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
                                 Batal
                             </a>
-                            <button type="submit"
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <button type="submit" 
+                                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                 Simpan Transaksi
                             </button>
                         </div>
                     </form>
+
+                    {{-- Search Modal --}}
+                    <div x-show="open" @keydown.escape.window="open = false" 
+                         class="fixed inset-0 z-50 flex items-center justify-center bg-black/20"
+                         x-transition:enter="ease-out duration-300"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="ease-in duration-200"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         style="display: none;">
+                        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4" @click.away="open = false">
+                            <div class="p-4">
+                                <input type="text" x-model.debounce.300ms="searchQuery" placeholder="Ketik nama barang..." x-ref="searchInput"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="max-h-80 overflow-y-auto border-t border-gray-200">
+                                <template x-if="isLoading">
+                                    <p class="p-4 text-center text-gray-500">Mencari...</p>
+                                </template>
+                                <template x-if="!isLoading && results.length === 0">
+                                    <p class="p-4 text-center text-gray-500" x-text="searchQuery ? 'Barang tidak ditemukan.' : 'Mulai ketik untuk mencari.'"></p>
+                                </template>
+                                <ul>
+                                    <template x-for="item in results" :key="item.id">
+                                        <li @click="selectItem(item)" class="px-4 py-3 border-b border-gray-200 hover:bg-gray-100 cursor-pointer">
+                                            <h4 class="font-semibold text-gray-800" x-text="item.product"></h4>
+                                            <p class="text-sm text-gray-600" x-text="`Stok: ${item.stok} | Harga: ${formatRupiah(item.harga)}`"></p>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @push('head')
+    @push('scripts')
     <script>
         let items = [];
 
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR'
-            }).format(angka);
+        function searchModal() {
+            return {
+                open: false,
+                searchQuery: '',
+                results: [],
+                isLoading: false,
+                selectItem(item) {
+                    document.getElementById('id_barang').value = item.id;
+                    document.getElementById('product').value = item.product;
+                    document.getElementById('product-display').value = item.product;
+                    document.getElementById('harga').value = item.harga;
+                    document.getElementById('quantity').value = 1;
+                    hitungSubTotal();
+                    this.open = false;
+                    this.searchQuery = '';
+                    this.results = [];
+                },
+                init() {
+                    this.$watch('open', (isOpen) => {
+                        if (isOpen) {
+                            this.$nextTick(() => this.$refs.searchInput.focus());
+                        }
+                    });
+
+                    this.$watch('searchQuery', (query) => {
+                        if (query.length < 2) {
+                            this.results = [];
+                            return;
+                        }
+                        this.isLoading = true;
+                        fetch(`{{ route('api.barang-service.search') }}?q=${query}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                this.results = data;
+                                this.isLoading = false;
+                            })
+                            .catch(() => {
+                                this.isLoading = false;
+                            });
+                    });
+                }
+            }
+        }
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
         }
 
         function hitungSubTotal() {
@@ -150,8 +218,9 @@
         }
 
         function hitungTotal() {
-            const total = items.reduce((sum, item) => sum + (item.harga * item.quantity), 0);
+            const total = items.reduce((sum, item) => sum + item.sub_total, 0);
             document.getElementById('total').value = total;
+            hitungKembalian();
         }
 
         function hitungKembalian() {
@@ -172,7 +241,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'Semua field harus diisi!'
+                    text: 'Pilih barang dan tentukan kuantitas terlebih dahulu!'
                 });
                 return;
             }
@@ -200,6 +269,7 @@
         function resetForm() {
             document.getElementById('id_barang').value = '';
             document.getElementById('product').value = '';
+            document.getElementById('product-display').value = '';
             document.getElementById('harga').value = '';
             document.getElementById('quantity').value = '1';
             document.getElementById('sub_total').value = '';
@@ -209,12 +279,12 @@
             const tbody = document.getElementById('item-list');
             tbody.innerHTML = items.map((item, index) => `
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">${item.id_barang}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${item.product}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${formatRupiah(item.harga)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${item.quantity}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${formatRupiah(item.sub_total)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.id_barang}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.product}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatRupiah(item.harga)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.quantity}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatRupiah(item.sub_total)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button type="button" onclick="hapusItem(${index})"
                             class="text-red-600 hover:text-red-900">Hapus</button>
                     </td>
@@ -222,29 +292,8 @@
             `).join('');
         }
 
-        // AJAX pencarian barang
-        document.getElementById('btn-cari-barang').addEventListener('click', function(e) {
-            const id_barang = document.getElementById('id_barang').value;
-            if (!id_barang) {
-                Swal.fire({ icon: 'error', title: 'ID Barang harus diisi!' });
-                return;
-            }
-            fetch(`{{ route('ajax.cari-barang') }}?id_barang=${id_barang}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('product').value = data.data.product;
-                        document.getElementById('harga').value = data.data.harga;
-                        document.getElementById('quantity').value = 1;
-                        hitungSubTotal();
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Barang tidak ditemukan!' });
-                        document.getElementById('product').value = '';
-                        document.getElementById('harga').value = '';
-                        document.getElementById('quantity').value = 1;
-                        document.getElementById('sub_total').value = '';
-                    }
-                });
+        document.getElementById('transaction-form').addEventListener('submit', function(e) {
+            document.getElementById('items-input').value = JSON.stringify(items);
         });
     </script>
     @endpush
