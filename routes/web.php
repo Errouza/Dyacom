@@ -2,21 +2,30 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\BarangServiceController;
 use App\Http\Controllers\BarangCustomController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\InvoiceController;
 
-// Home route
-use App\Http\Controllers\DashboardController;
-
-Route::get('/', [DashboardController::class, 'index']);
+// Home route - Redirect to login if not authenticated, otherwise go to dashboard
+Route::get('/', function () {
+    return Auth::check() ? redirect('/dashboard') : redirect()->route('login');
+});
 
 // Authentication Routes
 Route::get('/login', function () {
-    return view('login');
+    return Auth::check() ? redirect('/dashboard') : view('login');
 })->name('login');
+
+// Dashboard route - Protected by auth middleware
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+});
 
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $credentials = $request->only('email', 'password');
@@ -27,9 +36,18 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
 });
 
-Route::get('/register', function () {
-    return view('register');
-})->name('register');
+Route::post('/logout', function (\Illuminate\Http\Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
+
+use App\Http\Controllers\Auth\RegisterController;
+
+// Registration Routes
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
 Route::get('/password/request', function () {
     return view('password-request');

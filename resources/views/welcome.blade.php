@@ -8,10 +8,33 @@
         <main class="flex-1 bg-[#F0EBE3] min-h-screen">
             <header class="flex items-center justify-between px-8 py-4 border-b">
                 <h1 class="text-lg font-bold">Dashboard</h1>
-                <form method="POST" action="/logout">
+                <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
                     @csrf
-                    <button class="px-5 py-2 bg-[#172A5A] text-white rounded-lg font-semibold hover:bg-blue-900 transition">Log Out</button>
                 </form>
+                <button onclick="confirmLogout()" class="px-5 py-2 bg-[#172A5A] text-white rounded-lg font-semibold hover:bg-blue-900 transition">
+                    Log Out
+                </button>
+                
+                @push('scripts')
+                <script>
+                    function confirmLogout() {
+                        Swal.fire({
+                            title: 'Konfirmasi Logout',
+                            text: 'Apakah Anda yakin ingin keluar?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#172A5A',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, Logout',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('logout-form').submit();
+                            }
+                        });
+                    }
+                </script>
+                @endpush
             </header>
             <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-cyan-400 rounded-lg p-6 flex flex-col justify-center items-start min-h-[120px]">
