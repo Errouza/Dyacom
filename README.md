@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://via.placeholder.com/150x50?text=DYACOM+LOGO" alt="Dyacom Logo" width="200">
+  <img src="storage/app/public/logo_dyacom.png" alt="Dyacom Logo" width="200">
   <h1 align="center">Sistem Manajemen Penjualan Dyacom</h1>
   <p align="center">
     Aplikasi manajemen penjualan dan inventaris untuk toko komputer
