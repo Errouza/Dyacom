@@ -55,8 +55,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('penjualan/{penjualan}/download-invoice', [PenjualanController::class, 'downloadInvoice'])->name('penjualan.download-invoice');
 
     // Invoice Routes
-    Route::get('invoice', [InvoiceController::class, 'index'])->name('invoice.index');
-    Route::get('invoice/{invoice}', [InvoiceController::class, 'show'])->name('invoice.show');
+    Route::get('/invoice', [App\Http\Controllers\InvoiceController::class, 'index'])->name('invoice.index');
+    Route::get('/invoice/{invoice}', [InvoiceController::class, 'show'])->name('invoice.show');
+    Route::get('/invoice/{invoice}/print', [InvoiceController::class, 'print'])->name('invoice.print');
+
+    // AJAX endpoints for modal content
+    Route::get('/invoice/{invoice}/show-content', [InvoiceController::class, 'showContent'])->name('invoice.show-content');
+    Route::get('/invoice/{invoice}/print-content', [InvoiceController::class, 'printContent'])->name('invoice.print-content');
 
     // AJAX: Cari barang by ID
     Route::get('ajax/cari-barang', [TransaksiController::class, 'cariBarang'])->name('ajax.cari-barang');
