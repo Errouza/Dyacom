@@ -50,7 +50,7 @@
         <!-- Sidebar -->
         <aside class="w-64 bg-[#172A5A] text-white flex flex-col">
             <a href="/" class="flex items-center justify-center h-20 px-6 border-b border-white/20 hover:bg-white/5 transition-colors">
-                <img src="{{ asset('storage/logo_dyacom.png') }}" alt="Dyacom Logo" class="h-12">
+            <div class="text-2xl font-bold">DYACOM</div>
             </a>
             <a href="{{ route('profile.edit') }}" class="block">
                 <div class="flex items-center gap-3 p-4 border-t border-white/10 hover:bg-white/5 transition-colors">
@@ -119,7 +119,7 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <main class="flex-1 p-6 bg-blue-100">
+        <main class="flex-1 p-6 bg-gray-100">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-2xl font-semibold">{{ $header ?? 'Dashboard' }}</h1>

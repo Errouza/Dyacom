@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <div class="flex min-h-screen">
         <!-- Main Content -->
-        <main class="flex-1 bg-[#F0EBE3] min-h-screen">
+        <main class="flex-1 bg-white min-h-screen">
             <header class="flex items-center justify-between px-8 py-4 border-b">
                 <h1 class="text-lg font-bold">Dashboard</h1>
                 <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
