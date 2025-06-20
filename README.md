@@ -1,27 +1,160 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://via.placeholder.com/150x50?text=DYACOM+LOGO" alt="Dyacom Logo" width="200">
+  <h1 align="center">Sistem Manajemen Penjualan Dyacom</h1>
+  <p align="center">
+    Aplikasi manajemen penjualan dan inventaris untuk toko komputer
+    <br>
+    Dibangun dengan Laravel 10 dan Tailwind CSS
+  </p>
+  
+  [![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+  [![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+  [![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 </p>
 
-## About Laravel
+## 🚀 Tentang Aplikasi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Sistem Manajemen Penjualan Dyacom adalah aplikasi berbasis web yang dirancang untuk membantu manajemen operasional toko komputer. Aplikasi ini mencakup fitur manajemen produk, transaksi penjualan, pembuatan invoice, dan laporan keuangan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 📦 Manajemen Produk
+- Tambah, edit, dan hapus produk
+- Manajemen stok otomatis
+- Kategori produk
+- Pencarian produk
 
-## Learning Laravel
+### 💰 Transaksi Penjualan
+- Input transaksi cepat
+- Keranjang belanja
+- Perhitungan otomatis total belanja
+- Diskon dan promo
+
+### 📝 Invoice
+- Pembuatan invoice otomatis
+- Pencetakan invoice
+- Riwayat transaksi
+- Pencarian invoice
+
+### 📊 Laporan
+- Laporan penjualan harian/bulanan
+- Laporan stok barang
+- Laporan keuangan
+
+## 🛠️ Teknologi yang Digunakan
+
+- **Backend**: Laravel 10
+- **Frontend**: HTML5, Tailwind CSS, JavaScript
+- **Database**: MySQL
+- **Server**: Apache/Nginx
+- **Versi PHP**: 8.1+
+
+## 🚀 Instalasi
+
+### Persyaratan Sistem
+- PHP 8.1 atau lebih baru
+- Composer
+- MySQL 5.7+ atau MariaDB 10.3+
+- Node.js & NPM
+
+### Langkah-langkah Instalasi
+
+1. Clone repository:
+   ```bash
+   git clone https://github.com/username/dyacom.git
+   cd dyacom
+   ```
+
+2. Install dependensi PHP:
+   ```bash
+   composer install
+   ```
+
+3. Install dependensi JavaScript:
+   ```bash
+   npm install
+   npm run build
+   ```
+
+4. Salin file .env:
+   ```bash
+   cp .env.example .env
+   ```
+
+5. Generate key aplikasi:
+   ```bash
+   php artisan key:generate
+   ```
+
+6. Konfigurasi database di file .env:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=dyacom
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+7. Jalankan migrasi dan seeder:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+8. Jalankan server:
+   ```bash
+   php artisan serve
+   ```
+
+9. Buka browser dan akses:
+   ```
+   http://localhost:8000
+   ```
+
+## 🔐 Login Default
+
+- **Email**: admin@dyacom.com
+- **Password**: password
+
+## 📝 Panduan Penggunaan
+
+### 1. Manajemen Produk
+- Masuk ke menu "Produk"
+- Klik "Tambah Produk" untuk menambahkan produk baru
+- Gunakan fitur pencarian untuk menemukan produk dengan cepat
+
+### 2. Transaksi Baru
+- Masuk ke menu "Penjualan"
+- Tambahkan produk ke keranjang
+- Atur jumlah dan diskon jika ada
+- Klik "Bayar" untuk menyelesaikan transaksi
+
+### 3. Cetak Invoice
+- Masuk ke menu "Invoice"
+- Cari transaksi yang ingin dicetak
+- Klik ikon printer untuk mencetak invoice
+
+## 🤝 Berkontribusi
+
+Kontribusi sangat diterima! Silakan buat issue terlebih dahulu untuk mendiskusikan perubahan yang ingin Anda buat.
+
+1. Fork Project
+2. Buat Branch Fitur (`git checkout -b fitur/namafitur`)
+3. Commit Perubahan (`git commit -m 'Menambahkan fitur baru'`)
+4. Push ke Branch (`git push origin fitur/namafitur`)
+5. Buka Pull Request
+
+## 📄 Lisensi
+
+Proyek ini dilisensikan di bawah Lisensi MIT - liuh file [LICENSE](LICENSE) untuk detail lebih lanjut.
+
+## 💡 Dikembangkan Oleh
+
+- Tim Pengembang Dyacom
+- Email: info@dyacom.com
+- Website: [www.dyacom.com](https://www.dyacom.com)
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
