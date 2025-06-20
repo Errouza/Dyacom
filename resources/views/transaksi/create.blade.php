@@ -90,7 +90,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="buyer_name" class="block text-sm font-medium text-gray-700">Nama Pembeli (Opsional)</label>
+                                    <label for="buyer_name" class="block text-sm font-medium text-gray-700">Nama Pembeli</label>
                                     <input type="text" name="buyer_name" id="buyer_name"
                                         class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                         placeholder="Masukkan nama pembeli">

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Penjualan extends Model
 {
@@ -25,5 +26,10 @@ class Penjualan extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id_customer');
+    }
+
+    public function transaksi()
+    {
+        return $this->hasOne(Transaksi::class, 'id', 'id_pesanan');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Penjualan;
 use App\Models\User;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,19 +16,17 @@ class PenjualanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Penjualan::with('customer');
+        $query = Transaksi::with(['details']);
 
         // Date filtering
         if ($request->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('tanggal', [
-                Carbon::parse($request->start_date)->startOfDay(),
-                Carbon::parse($request->end_date)->endOfDay(),
-            ]);
+            $query->whereDate('created_at', '>=', $request->start_date)
+                  ->whereDate('created_at', '<=', $request->end_date);
         }
 
-        $penjualans = $query->latest('tanggal')->paginate(10);
+        $transaksis = $query->latest('created_at')->paginate(10);
         
-        return view('penjualan.index', compact('penjualans'));
+        return view('penjualan.index', ['penjualans' => $transaksis]);
     }
 
     /**

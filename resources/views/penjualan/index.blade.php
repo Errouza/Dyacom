@@ -39,49 +39,91 @@
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">No</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID Customer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID Pesanan</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Quantity</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Price Total</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Metode Pengambilan</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status Pembayaran</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nama Pembeli</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID Transaksi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Item</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Harga</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($penjualans as $penjualan)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $loop->iteration }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->tanggal->format('d/m/Y') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->customer->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->id_pesanan }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->quantity }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($penjualan->price_total, 0, ',', '.') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->metode_pengambilan }}</td>
+                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="toggleDetails('details-{{ $loop->index }}')">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ($penjualans->currentPage() - 1) * $penjualans->perPage() + $loop->iteration }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->created_at->format('d/m/Y H:i') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->buyer_name ?? 'Tamu' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{{ str_pad($penjualan->id, 6, '0', STR_PAD_LEFT) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $penjualan->details->sum('quantity') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                {{ $penjualan->status_pembayaran === 'Selesai' ? 'bg-green-100 text-green-800' : 
-                                                   ($penjualan->status_pembayaran === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                                                {{ $penjualan->status_pembayaran }}
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Lunas
                                             </span>
                                         </td>
+                                        <!-- Tombol Aksi -->
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            <a href="{{ route('penjualan.invoice', $penjualan->id) }}" target="_blank" 
-                                               class="text-blue-600 hover:text-blue-900 mr-2">
-                                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            <button type="button" 
+                                                    class="text-blue-600 hover:text-blue-900 focus:outline-none" 
+                                                    onclick="event.stopPropagation(); toggleDetails('details-{{ $loop->index }}')"
+                                                    title="Lihat Detail">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
-                                            </a>
-                                            <a href="{{ route('penjualan.download-invoice', $penjualan->id) }}" 
-                                               class="text-green-600 hover:text-green-900">
-                                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                                </svg>
-                                            </a>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Detail Transaksi -->
+                                    <tr id="details-{{ $loop->index }}" class="hidden bg-gray-50">
+                                        <td colspan="8" class="px-6 py-4">
+                                            <div class="ml-8">
+                                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                                    <div>
+                                                        <h4 class="font-medium text-gray-900">Informasi Pembeli</h4>
+                                                        <p class="text-sm text-gray-500">{{ $penjualan->buyer_name ?? 'Tamu' }}</p>
+                                                        @if($penjualan->buyer_phone)
+                                                            <p class="text-sm text-gray-500">{{ $penjualan->buyer_phone }}</p>
+                                                        @endif
+                                                        @if($penjualan->buyer_email)
+                                                            <p class="text-sm text-gray-500">{{ $penjualan->buyer_email }}</p>
+                                                        @endif
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <h4 class="font-medium text-gray-900">Total Pembayaran</h4>
+                                                        <p class="text-2xl font-bold text-gray-900">Rp {{ number_format($penjualan->total, 0, ',', '.') }}</p>
+                                                        <p class="text-sm text-gray-500">Dibayar: Rp {{ number_format($penjualan->bayar, 0, ',', '.') }}</p>
+                                                        <p class="text-sm text-gray-500">Kembalian: Rp {{ number_format($penjualan->kembalian, 0, ',', '.') }}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <h4 class="font-medium text-gray-900 mb-2">Daftar Barang:</h4>
+                                                @if($penjualan->details->count() > 0)
+                                                    <table class="min-w-full divide-y divide-gray-200 mt-2">
+                                                        <thead class="bg-gray-100">
+                                                            <tr>
+                                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
+                                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Satuan</th>
+                                                                <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                                                                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="bg-white divide-y divide-gray-200">
+                                                            @foreach($penjualan->details as $detail)
+                                                                <tr>
+                                                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ $detail->product }}</td>
+                                                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">{{ $detail->quantity }}</td>
+                                                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-right text-gray-900">Rp {{ number_format($detail->sub_total, 0, ',', '.') }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                @else
+                                                    <p class="text-sm text-gray-500">Tidak ada detail transaksi tersedia.</p>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -103,4 +145,12 @@
             </div>
         </div>
     </div>
+    <script>
+        function toggleDetails(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.toggle('hidden');
+            }
+        }
+    </script>
 </x-app-layout>
