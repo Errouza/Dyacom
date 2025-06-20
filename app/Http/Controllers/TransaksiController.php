@@ -55,8 +55,9 @@ class TransaksiController extends Controller
                     'buyer_phone' => $request->input('buyer_phone'),
                 ]);
 
-                // 2. Create the transaction detail records
+                // 2. Create the transaction detail records and update stock
                 foreach ($items as $item) {
+                    // Create transaction detail
                     $transaksi->details()->create([
                         'id_barang' => $item['id_barang'],
                         'product' => $item['product'],
@@ -64,6 +65,17 @@ class TransaksiController extends Controller
                         'quantity' => $item['quantity'],
                         'sub_total' => $item['sub_total'],
                     ]);
+                    
+                    // Update stock in barang_service
+                    $barangService = BarangService::where('id_barang', $item['id_barang'])->first();
+                    
+                    if ($barangService) {
+                        if ($barangService->stok < $item['quantity']) {
+                            throw new \Exception('Stok tidak mencukupi untuk produk: ' . $item['product']);
+                        }
+                        
+                        $barangService->decrement('stok', $item['quantity']);
+                    }
                 }
             });
 

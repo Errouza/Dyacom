@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>DYACOM</title>
+    <link rel="icon" href="{{ asset('storage/logo_dyacom.png') }}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- SweetAlert2 -->
@@ -48,8 +49,8 @@
     <div class="flex min-h-screen">
         <!-- Sidebar -->
         <aside class="w-64 bg-[#172A5A] text-white flex flex-col">
-            <a href="/" class="flex items-center h-16 px-6 font-bold text-2xl tracking-widest border-b border-white/20 hover:text-blue-300 transition-colors">
-                DYACOM
+            <a href="/" class="flex items-center justify-center h-20 px-6 border-b border-white/20 hover:bg-white/5 transition-colors">
+                <img src="{{ asset('storage/logo_dyacom.png') }}" alt="Dyacom Logo" class="h-12">
             </a>
             <a href="{{ route('profile.edit') }}" class="block">
                 <div class="flex items-center gap-3 p-4 border-t border-white/10 hover:bg-white/5 transition-colors">
@@ -118,9 +119,14 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <main class="flex-1 p-6 bg-gray-100">
+        <main class="flex-1 p-6 bg-blue-100">
             <div class="max-w-7xl mx-auto">
-                <h1 class="text-2xl font-semibold mb-6">DYACOM</h1>
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-semibold">{{ $header ?? 'Dashboard' }}</h1>
+                    <div class="text-sm text-gray-500">
+                        {{ now()->translatedFormat('l, d F Y') }}
+                    </div>
+                </div>
                 {{ $slot }}
             </div>
         </main>

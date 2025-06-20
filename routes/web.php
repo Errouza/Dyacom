@@ -9,9 +9,9 @@ use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\InvoiceController;
 
 // Home route
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\DashboardController;
+
+Route::get('/', [DashboardController::class, 'index']);
 
 // Authentication Routes
 Route::get('/login', function () {
